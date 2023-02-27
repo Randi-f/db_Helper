@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Demo1</title>
+</head>
+<body>
+<table width="100%" border="1" cellspacing="0" cellpadding="0">
+  <tr>
+      <td>序号</td>
+    <td>城市</td>
+    <td>省会</td>
+    <td>描述</td>
+  </tr>
+  <foreach name="list" item="item" key="index">
+  <tr>
+      <td>{$index+1}</td>
+    <td>{$item.cityname}</td>
+    <td>{$item.province}</td>
+    <td>{$item.citydesc}</td>
+  </tr>
+  </foreach>
+</table>
+</body>
+</html>
