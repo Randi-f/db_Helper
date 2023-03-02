@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  顺利运行版本
+    <div id="box">
+        <!-- 显示结果 -->
+    </div>
+    <script>
+    	//这是数据
+        var headDatas = ['姓名', '科目', '成绩', '操作'];
+        var datas = [{
+                name: 'zs',
+                subject: '语文',
+                score: 90
+            },
+            {
+                name: 'zs',
+                subject: '数学',
+                score: 110
+            },
+            {
+                name: 'zs',
+                subject: '英语',
+                score: 90
+            },
+            {
+                name: 'zs',
+                subject: '物理',
+                score: 100
+            },
+            {
+                name: 'zs',
+                subject: '化学',
+                score: 90
+            },
+            {
+                name: 'zs',
+                subject: '生物',
+                score: 70
+            },
+        ];
+     
+    </script>
+</body>
+</html>
+
+<script>
+        /* 第一步：获取容器box */
+        var box = document.getElementById('box');
+        /* 第二步：创建一个Table添加到box里面 */
+        var table = document.createElement('table');  //创建的时候需要''号
+        table.style.border = '1px solid black'; //添加样式
+        table.style.width = '600px';
+        box.appendChild(table); //添加的是子节点,不需要''号
+        /* 第三步：创建thead,tbody添加到table里面 */
+        /* var thead = document.createElement('thead');
+        var tbody = document.createElement('tbody');
+        table.appendChild(thead);
+        table.appendChild(tbody); */
+        var thead = table.createTHead('thead'); 
+        var tbody = table.createTBody('tbody'); //这种写法也能达到效果,thead与tbody是table的固有属性.仅限于table
+        /* 第四步: 存入thead的数据tr/th*array.length*/
+        var tr = document.createElement('tr');
+        tr.style.textAlign = 'center';
+        tr.style.height = '40px';
+        tr.style.backgroundColor = '#999';
+        thead.appendChild(tr);
+        for(var i = 0; i < headDatas.length; i++){ //遍历数组
+            /* 利用循环创建th */
+            var th = document.createElement('th');
+            tr.appendChild(th);
+            /* 数据的传入 */
+            th.innerText = headDatas[i];
+        }
+        /* 第五步：存入tbody的数据tr/td 需要创建新的tr*/
+        for(var i = 0; i < datas.length; i++){
+            var tr = document.createElement('tr'); //需要创建的个数
+            tbody.appendChild(tr);
+            for(var key in datas[i]){
+                var td = document.createElement('td');
+                tr.style.textAlign = 'center';
+                tr.appendChild(td);
+                /* 数据的传入 */
+                td.innerText = datas[i][key];  
+            }
+            /* 创建一个a标签用来删除 */
+            var a = document.createElement('a');
+            a.href = '#';
+            a.innerText = '删除';
+            tr.appendChild(a);
+            /* 删除功能 点击事件 */
+            a.onclick = function(){
+                this.parentNode.parentNode.removeChild(this.parentNode); //parentNode当前节点的父亲节点,removeChild删除子节点
+            }
+        }
+    </script>
