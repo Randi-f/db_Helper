@@ -3,7 +3,7 @@
  * @Version: 1.0
  * @Author: fsh
  * @Date: 2023-02-19 14:09:26
- * @LastEditTime: 2023-02-21 22:49:50
+ * @LastEditTime: 2023-03-12 22:41:30
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -74,21 +74,71 @@
         }
     </style>
 </head>
+<script type="text/javascript">  
+    function check2pwd() {  
+
+        if(first_name.value==""){
+            alert("first name is empty");
+            return
+        }
+
+        if(last_name.value==""){
+            alert("last name is empty");
+            return
+        }
+
+        if(email.value==""){
+            alert("email is empty");
+            return
+        }
+
+        if(password.value==""){
+            alert("password is empty");
+            return
+        }
+
+        if(password.value != passwordnot.value) {  
+            alert("两次输入密码不一致！")
+            password.value = "";  
+            passwordnot.value = "";
+            return
+        }
+
+        var info = {'first_name': first_name.value, 'last_name':last_name.value,
+        'email':email.value, 'password':password.value};
+        $.ajax({
+		    url: "/login/createUser",
+		    type:'post',
+		    data: info
+        })
+
+        // window.location.href="/login/createUser";
+        
+    
+    }
+
+
+</script>
 <body>
     <div class="container">
         <div class="login-wrapper">
             <div class="header">Create Account</div>
             <div class="form-wrapper">
+                <!-- <form action = "{:url('login/createUser')}" method="post"> -->
                 <td label for="first_name">first name:</label></td>
                 <input type="text" first name: name="first_name" id = "first_name" placeholder="first name" class="input-item">
-                last name: <input type="text" name="last_name" placeholder="last name" class="input-item">
-                email address:<input type="text" name="email" placeholder="email address" class="input-item">
-                password:<input type="password" name="password" placeholder="password" class="input-item">
-                re-enter password:<input type="password" name="passwordnot" placeholder="re-enter password" class="input-item">
-                <div class="btn">Create Account</div>
+                last name: <input type="text" name="last_name" id = "last_name" placeholder="last name" class="input-item">
+                email address:<input type="text" name="email" id = "email" placeholder="email address" class="input-item">
+                password:<input type="password" id = "password" name="password" placeholder="password" class="input-item">
+                re-enter password:<input type="password" id = "passwordnot" name="passwordnot" placeholder="re-enter password" class="input-item">
+                <div><input type="submit" name = "createUser" class="btn" value = "Create Account" onclick="check2pwd()"></div> 
+                <!-- <input type="button" value="我是一个按钮" οnclick="jump1()"> -->
+
+                <!-- </form> -->
             </div>
 
         </div>
     </div>
 </body>
+
 </html>

@@ -4,7 +4,7 @@
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-01 14:39:35
- * @LastEditTime: 2023-02-17 20:09:10
+ * @LastEditTime: 2023-03-12 15:39:44
  */
 
 namespace app\controller;
@@ -12,7 +12,7 @@ namespace app\controller;
 use think\facade\Db;
 use app\model\User;
 
-class DataTest
+class DataTestController
 {
     public function index()## 测试数据库连接
     {

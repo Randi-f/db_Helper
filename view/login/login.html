@@ -3,7 +3,7 @@
  * @Version: 1.0
  * @Author: fsh, https://blog.csdn.net/bhegi_seg/article/details/123394504
  * @Date: 2023-02-19 14:09:26
- * @LastEditTime: 2023-02-19 14:26:27
+ * @LastEditTime: 2023-03-12 16:49:39
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -75,19 +75,25 @@
     </style>
 </head>
 <body>
+    
     <div class="container">
         <div class="login-wrapper">
             <div class="header">Login</div>
             <div class="form-wrapper">
+            <form action = "{:url('login/validateUser')}" method="post">
                 <input type="text" name="username" placeholder="username" class="input-item">
                 <input type="password" name="password" placeholder="password" class="input-item">
-                <div class="btn">Login</div>
+                <div><input type="submit" name = "login" class="btn" value = "Login"></div> 
+            </form>
+                
+
             </div>
             <div class="msg">
                 Don't have account?
-                <a href="#">Sign up</a>
+                <a href="login/createPage">Sign up</a>
             </div>
         </div>
     </div>
+    
 </body>
 </html>

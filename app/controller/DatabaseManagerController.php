@@ -4,7 +4,7 @@
  * @Version: 1.0
  * @Author: fsh
  * @Date: 2023-02-19 14:40:58
- * @LastEditTime: 2023-02-20 21:07:58
+ * @LastEditTime: 2023-03-12 10:40:39
  */
 
  namespace app\controller;
@@ -13,7 +13,7 @@
  use think\facade\Db;
  // use app\model\User;
 
- class DatabaseManager{
+ class DatabaseManagerController{
     public function index()
     {
         $db_model = new DbModel();

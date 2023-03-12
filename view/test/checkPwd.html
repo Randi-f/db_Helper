@@ -1,0 +1,39 @@
+<!--
+ * @Description: 
+ * @Version: 
+ * @Author: fsh
+ * @Date: 2023-03-12 16:59:25
+ * @LastEditTime: 2023-03-12 16:59:31
+-->
+<!DOCTYPE html >  
+<html >  
+    <head>  
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+        <title>checkPwd</title>  
+        <meta name="author" content="yangch" />  
+ 
+        <script>  
+            function check2pwd() {  
+                    if(input1.value != input2.value) {  
+                        alert("两次输入密码不一致！")
+                        input1.value = "";  
+                        input2.value = "";  
+                    }
+            }
+        </script>
+    </head>  
+    <body>  
+        <form action="testaction">  
+            <table>  
+                <tr><td>密码：&nbsp;&nbsp;  
+                  <input type="password" id="input1"></td>  
+                </tr>  
+                <tr><td>重复密码：  
+                  <input type="password" id="input2" onblur="check2pwd()" ></td></tr>   
+                  
+            </table>  
+            <input type="button" value="test啦!" />  
+        </form>  
+          
+    </body>  
+</html> 

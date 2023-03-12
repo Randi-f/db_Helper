@@ -1,0 +1,60 @@
+<!--
+ * @Description: 
+ * @Version: 
+ * @Author: fsh
+ * @Date: 2023-03-02 19:53:53
+ * @LastEditTime: 2023-03-02 19:54:50
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	
+    <script src="__JS__/jquery-3.6.3.min.js"></script>
+</head>
+<body>
+	<script>
+		var data = [
+		{name:'张三',age:19,gender:'男'},
+		{name:'李四',age:19,gender:'男'},
+		{name:'张三',age:19,gender:'男'},
+		{name:'王五',age:12,gender:'男'},
+		{name:'张三',age:15,gender:'女'},
+		{name:'张三二',age:19,gender:'男'},
+		{name:'张三',age:19,gender:'女'}
+		];
+		var table = document.createElement('table');
+		table.boredr = 1;
+		table.style.border = '1px solid blue';
+		var tbody = document.createElement('tbody');
+		table.appendChild(tbody);
+		$.each(data,function(i,v){//遍历每一个{}对象
+			var tr = document.createElement('tr');
+			var num = document.createElement('td');
+			num.style.border = '1px solid blue';
+			num.style.width = '100px';
+			num.style.height = '20px';
+			num.appendChild(document.createTextNode(i));
+			tr.appendChild(num);
+			$.each(v,function(index,value){//遍历{}中的每一项
+				var td = document.createElement('td');
+				td.style.border = '1px solid blue';
+				td.style.width = '100px';
+				td.style.height = '20px';
+				td.appendChild(document.createTextNode(value));
+				tr.appendChild(td);
+			})
+			tbody.appendChild(tr);
+		})
+		document.body.appendChild(table);
+		//真的使用jq来生成代码
+		$('<table border="1"><tbody>'+$.map(data,function(v,i){
+             return '<tr><td style="width=100px;heigth=20x;">'+i+'</td>'+$.map(v,function(value){
+             	return '<td style="width:100px;heigth:20px;">'+value+'</td>';
+             }).join('')+'</tr>';
+		}).join('')+'</tbody></table>').appendTo('body');
+ 
+	</script>
+</body>
+</html>
