@@ -4,13 +4,14 @@
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-19 14:19:52
- * @LastEditTime: 2023-03-12 17:03:23
+ * @LastEditTime: 2023-04-10 17:00:41
  */
 namespace app\controller;
 
 use app\BaseController;
 use think\facade\view;
-use app\model\User as UserModel;
+use app\models\service\data\User as UserModel;
+use app\service\SendMail;
 use think\facade\Db;
 use think\facade\Session;
 
@@ -25,14 +26,20 @@ class LoginController extends BaseController
         return View::fetch("create");
     }
 
-
+    /**
+     * @description: register process
+     * @return {*}
+     */    
     public function createUser(){
         $firstName = $_POST['first_name'];
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
-        echo "hi";
+        $ret =  UserModel::createUser($firstName,$lastName,$email,md5($password));
+        SendMail::sendMail($email,$ret);
+        return $ret;
     }
+
 
     /**
      * @description: validate user

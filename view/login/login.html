@@ -3,14 +3,16 @@
  * @Version: 1.0
  * @Author: fsh, https://blog.csdn.net/bhegi_seg/article/details/123394504
  * @Date: 2023-02-19 14:09:26
- * @LastEditTime: 2023-03-12 16:49:39
+ * @LastEditTime: 2023-04-09 16:30:49
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <script src="__JS__/bootstrap.js"></script>
+     <script src="__JS__/jquery-3.6.3.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -74,6 +76,11 @@
         }
     </style>
 </head>
+<script type="text/javascript"> 
+    function loginSystem() { 
+        var info = {'username': username.value, 'password':md5(password.value)};
+    }
+</script>
 <body>
     
     <div class="container">
@@ -81,9 +88,9 @@
             <div class="header">Login</div>
             <div class="form-wrapper">
             <form action = "{:url('login/validateUser')}" method="post">
-                <input type="text" name="username" placeholder="username" class="input-item">
-                <input type="password" name="password" placeholder="password" class="input-item">
-                <div><input type="submit" name = "login" class="btn" value = "Login"></div> 
+                <input type="text" name="username" id="username" placeholder="username" class="input-item">
+                <input type="password" name="password" id="password" placeholder="password" class="input-item">
+                <div><input type="submit" name = "login" class="btn" value = "Login" onclick="loginSystem()"></div> 
             </form>
                 
 

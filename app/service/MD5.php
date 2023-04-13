@@ -1,7 +1,7 @@
 <?php
 /*
  * @Description: MD5 encryption
- * @Version: 
+ * @Version: 1.2
  * @Author: fsh
  * @Date: 2023-03-12 15:27:08
  * @LastEditTime: 2023-03-12 15:29:06

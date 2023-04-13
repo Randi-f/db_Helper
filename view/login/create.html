@@ -3,14 +3,21 @@
  * @Version: 1.0
  * @Author: fsh
  * @Date: 2023-02-19 14:09:26
- * @LastEditTime: 2023-03-12 22:41:30
+ * @LastEditTime: 2023-04-10 16:21:35
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register</title>
+    <!--引入css文件-->
+    <!-- <link rel="stylesheet" href="__CSS__/bootstrap.css.map" />
+    <link rel="stylesheet" href="__CSS__/bootstrap.css" /> -->
+     <!--引入js文件-->
+     <script src="__JS__/bootstrap.js"></script>
+     <script src="__JS__/jquery-3.6.3.min.js"></script>
+     
     <style>
         * {
             margin: 0;
@@ -76,7 +83,6 @@
 </head>
 <script type="text/javascript">  
     function check2pwd() {  
-
         if(first_name.value==""){
             alert("first name is empty");
             return
@@ -87,6 +93,12 @@
             return
         }
 
+        var re = /(^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+)|(^$)/;
+		if(!re.test($("#email").val())) {
+			alert("wrong email format！");
+			return;
+		}
+
         if(email.value==""){
             alert("email is empty");
             return
@@ -96,21 +108,33 @@
             alert("password is empty");
             return
         }
+        
 
         if(password.value != passwordnot.value) {  
-            alert("两次输入密码不一致！")
+            alert("re-enter password mismatch!")
             password.value = "";  
             passwordnot.value = "";
             return
         }
 
+        if($("#password").val().length > 16 || $("#password").val().length < 2) { // 上线时长度改为6-16
+			alert("length of password : 6-16");
+			return;
+		}
+
         var info = {'first_name': first_name.value, 'last_name':last_name.value,
         'email':email.value, 'password':password.value};
         $.ajax({
-		    url: "/login/createUser",
-		    type:'post',
-		    data: info
-        })
+            type:'post',
+		    url: "{:url('login/createUser')}",
+		    data: info,
+            success: function(d) {
+                alert("调用成功")
+			},
+            error: function(data){
+                alert("diaoyongshibai");
+            }
+        });
 
         // window.location.href="/login/createUser";
         
@@ -124,17 +148,12 @@
         <div class="login-wrapper">
             <div class="header">Create Account</div>
             <div class="form-wrapper">
-                <!-- <form action = "{:url('login/createUser')}" method="post"> -->
-                <td label for="first_name">first name:</label></td>
-                <input type="text" first name: name="first_name" id = "first_name" placeholder="first name" class="input-item">
+                first name:<input type="text" first name: name="first_name" id = "first_name" placeholder="first name" class="input-item">
                 last name: <input type="text" name="last_name" id = "last_name" placeholder="last name" class="input-item">
                 email address:<input type="text" name="email" id = "email" placeholder="email address" class="input-item">
                 password:<input type="password" id = "password" name="password" placeholder="password" class="input-item">
                 re-enter password:<input type="password" id = "passwordnot" name="passwordnot" placeholder="re-enter password" class="input-item">
                 <div><input type="submit" name = "createUser" class="btn" value = "Create Account" onclick="check2pwd()"></div> 
-                <!-- <input type="button" value="我是一个按钮" οnclick="jump1()"> -->
-
-                <!-- </form> -->
             </div>
 
         </div>
