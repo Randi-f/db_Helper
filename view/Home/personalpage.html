@@ -1,9 +1,9 @@
 <!--
- * @Description: 
- * @Version: 
+ * @Description: personal page
+ * @Version: 2.6
  * @Author: fsh
  * @Date: 2023-04-10 17:07:23
- * @LastEditTime: 2023-04-13 18:05:34
+ * @LastEditTime: 2023-04-17 11:32:31
 -->
 <!DOCTYPE html>
 <html>
@@ -11,7 +11,37 @@
 <script src="__JS__/bootstrap.js"></script>
 <script src="__JS__/jquery-3.6.3.min.js"></script>
 <style>
-    body {font-family: Arial;}
+  form.example input[type=text] {
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+      }
+      
+      form.example button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #2196F3;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none;
+        cursor: pointer;
+      }
+      
+      form.example button:hover {
+        background: #0b7dda;
+      }
+      
+      form.example::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+      body {font-family: Arial;}
     
     /* Style the tab */
     .tab {
@@ -49,12 +79,88 @@
       border: 1px solid #ccc;
       border-top: none;
     }
-    </style>
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 16px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    btn {
+                text-align: center;
+                padding: 10px;
+                width: 100%;
+                margin-top: 40px;
+                background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+                color: #fff;
+            }
+  </style>
 <head>
 	<meta charset="utf-8">
 	<title>Home</title>
 </head>
+
 <script>
+    function modifyInfo(){
+      var json_tem = {"operation":"modify profile"};
+      if(checkbox_firstName.checked==true){
+          if(firstName.value==""){
+            alert("input of first name is blank!");
+            return;
+          }
+          // json_tem.push({"firstName":firstName.value});
+          json_tem["firstName"]=firstName.value;
+      }
+      if(checkbox_lastName.checked==true){
+          if(lastName.value==""){
+            alert("input of last name is blank!");
+            return;
+          }
+          // json_tem.push({"lastName":lastName.value});
+          json_tem["lastName"]=lastName.value;
+      }
+      if(checkbox_email.checked==true){
+          if(email.value==""){
+            alert("input of email is blank!");
+            return;
+          }
+          json_tem.push({"email":email.value});
+      }
+
+      if(checkbox_firstName.checked==false && checkbox_lastName.checked==false && checkbox_email.checked==false){
+        alert("you have not chosen anything to modify");
+        return;
+      }
+      // alert(json_tem);
+      // document.write(JSON.stringify(json_tem));
+      // alert(json_tem.className);
+      var data = JSON.stringify(json_tem);
+
+      $.ajax({
+        type:'post',
+		    url: "{:url('home/modifyInfo')}",
+		    data: json_tem,
+            success: function(d) {
+              // alert(JSON.stringify(d));
+              // alert(d);
+              window.location.reload();
+            },
+            error: function(data){
+                alert("error");
+            }
+      });
+    }
+
     function openTab(evt, tabName) {
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
@@ -67,41 +173,169 @@
       }
       document.getElementById(tabName).style.display = "block";
       evt.currentTarget.className += " active";
+
+      $.ajax({
+          type:'post',
+		      url: "{:url('login/getUser')}",
+		      data: {'none':"none"},
+            success: function(d) {
+              // alert(d);
+              updateTable('myTable',d);
+
+			},
+            error: function(data){
+              alert("error");
+            }
+        });
+
+
+      $.ajax({
+        type:'post',
+		    url: "{:url('home/getUserData')}",
+		    data: {'none':"none"},
+        success: function(d) {
+          // alert(d);
+          updateTable('myTable1',d);
+			  },
+        error: function(data){
+          alert("error");
+        }
+      });
+      
     }
     
+    function updateTable(tableId, d){
+      var json = JSON.parse(d);
+      var table=document.getElementById(tableId);
+      //create thead and append into table (创建thead，并追加到table中)
+      var thead=document.createElement("thead");
+      table.appendChild(thead);
+      //create tr and append to thead (创建tr,并追加到thead)
+      var tr=document.createElement("tr");
+      thead.appendChild(tr);
+      //read the attribute of one of json array (json数组中第1个人的每个属性)
+      for(var key in json[0]){
+        //create th (创建th)
+        var th=document.createElement("th");
+        //set the content of th as key (设置th的内容为key)
+        th.innerHTML=key;
+        //append th to tr (将th追加到tr中)
+        tr.appendChild(th);
+      }
+      //create element tbody (创建tbody元素)
+      var tbody=document.createElement("tbody");
+      //将tbody追加到table中
+      table.appendChild(tbody);
+      //遍历json中所有员工
+      for(var i=0;i<json.length;i++){
+        //创建tr
+        var tr=document.createElement("tr");
+        //遍历当前员工的每个属性
+        for(var key in json[i]){
+          //创建td
+          var td=document.createElement("td");
+          //设置td的内容为当前员工的当前属性值
+          td.innerHTML=json[i][key];
+          //将td追加到tr
+          tr.appendChild(td);
+        }//(遍历结束)
+        //将tr追加到tbody中
+        tbody.appendChild(tr);
+      }
+      //将table添加到id为data的div下
+      document.getElementById("data").appendChild(table);
+    }
+
     // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    // document.getElementById("defaultOpen").click();
+      
     </script>
+    <script>
+      // Get the modal
+      var modal = document.getElementById('id01');
+      
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+      </script>
 <body>
 	<div class="container">
         <div class=wrapper>
             <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'Home')" id="defaultOpen">Home</button>
+            <button class="tablinks" onclick="openTab(event, 'Help')" id="defaultOpen">Help</button>
             <button class="tablinks" onclick="openTab(event, 'Profile')">Profile</button>
             <button class="tablinks" onclick="openTab(event, 'My Data')">My Data</button>
             <button class="tablinks" onclick="openTab(event, 'Authorize User')">Authorize User</button>
             <button class="tablinks" onclick="openTab(event, 'Upload Data')">Upload Data</button>
-            <button class="tablinks" onclick="openTab(event, 'Help')">Help</button>
+
             </div>
     
-            <div id="Home" class="tabcontent">
-                <h3>Home</h3>
-                <p>Home is the capital city of England.</p>
+            <div id="Help" class="tabcontent">
+                <h3>Help</h3>
+                <p>Help is the capital city of England.</p>
             </div>
     
             <div id="Profile" class="tabcontent">
                 <h3>Profile</h3>
-                <p>Profile is the capital of France.</p> 
+                <p> </p> 
+                <div style="overflow-x:auto;">
+                <table id = "myTable" data-pagination="true" data-side-pagination="client" data-page-size="5"   >          
+                </table>
+                
+                <button class="tablinks" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Modify              Data</button>
+                <div id="id01" class="modal">
+                  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                  <form class="modal-content" >
+                    <div class="container1">
+                      <h1>Modify Profile Information</h1>
+                      <hr>
+                      <label>
+                        <input type="checkbox" name="checkbox_firstName" id="checkbox_firstName" style="margin-bottom:15px">Modify first name
+                      </label>     
+                      <input type="text" placeholder="first name" name="firstName" id = "firstName">
+
+                      <label>
+                        <input type="checkbox" name="checkbox_lastName" id="checkbox_lastName" style="margin-bottom:15px">Modify last name
+                      </label>     
+                      <input type="text" placeholder="last name" name="lastName" id = "lastName">
+
+                      <label>
+                      <input type="checkbox" name="checkbox_email" id="checkbox_email" style="margin-bottom:15px">Modify email
+                      </label>     
+                      <input type="text" placeholder="email" name="email" id = "email">
+
+
+                      <div class="clearfix">
+                        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+                        <button type="button" class="signupbtn" onclick="modifyInfo()" class="btn">Confirm</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                </div>
             </div>
     
             <div id="My Data" class="tabcontent">
                 <h3>My Data</h3>
-                <p>My Data is the capital of Japan.</p>
+                <div style="overflow-x:auto;">
+                  <table id = "myTable1" data-pagination="true" data-side-pagination="client" data-page-size="5"   >          
+                  </table>
+                  <form class="example" action = "{:url('home/chooseDataTable')}" method="post">
+                    <input type="text" placeholder="use the data with the id of .." name="auth_id" id="auth_id" required>
+                    <button type="submit" >view data</button>
+                  </form>
+                </div>
             </div>
 
             <div id="Authorize User" class="tabcontent">
               <h3>Authorize User</h3>
               <p>Authorize User is the capital of Japan.</p>
+              <table id = "myTable2" data-pagination="true" data-side-pagination="client" data-page-size="5" >
+                
+              </table>
             </div>
 
             <div id="Upload Data" class="tabcontent">
@@ -112,6 +346,23 @@
             <div id="Help" class="tabcontent">
               <h3>Help</h3>
               <p>Help is the capital of Japan.</p>
+              <table >
+                <tr>
+                  <td>Jill</td>
+                  <td>Smith</td>
+                  <td>50</td>
+                </tr>
+                <tr>
+                  <td>Eve</td>
+                  <td>Jackson</td>
+                  <td>94</td>
+                </tr>
+                <tr>
+                  <td>Adam</td>
+                  <td>Johnson</td>
+                  <td>67</td>
+                </tr>
+              </table>
             </div>
 
         </div>

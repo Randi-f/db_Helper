@@ -4,7 +4,7 @@
  * @Version: 
  * @Autor: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-02-17 11:23:46
+ * @LastEditTime: 2023-04-15 17:49:38
  */
 // +----------------------------------------------------------------------
 // | 应用设置
@@ -39,4 +39,10 @@ return [
     'error_message'    => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'   => false,
+
+    'session'                => [
+        'prefix'         => 'think',
+        'type'           => '',
+        'auto_start'     => true,
+    ],
 ];

@@ -4,7 +4,7 @@
  * @Version: 
  * @Author: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-11 19:08:25
+ * @LastEditTime: 2023-04-17 10:50:58
  */
 
 namespace app\controller;
@@ -14,6 +14,10 @@ use think\facade\view;
 use app\models\service\data\User;
 use app\service\SendMail;
 use app\models\service\page\UserService;
+use app\models\service\page\AuthService;
+use app\models\service\page\RunInstancesService;
+use think\facade\Request;
+
 
 class HomeController extends BaseController
 {
@@ -27,5 +31,59 @@ class HomeController extends BaseController
         $userId=1;
         $ret = UserService::getProfile($userId);
         return $ret;
+    }
+
+    public function modifyInfo(){
+        $updateInfo=["none" =>"none"];
+        if(Request::has('firstName','post')){
+            $updateInfo['first_name']=$_POST['firstName'];
+        }
+        unset($updateInfo["none"]);
+        
+        $ret = UserService::modifyProfileInfo($updateInfo);
+        return json($ret);
+        // $re=Request::has('firstName','post');
+        // // $ret={'status': $re };
+        // return json($re);
+
+        // return $_POST;
+        // return "传输成功";
+        // return "success";
+
+    }
+
+    public function chooseDataTable(){
+        $runInstancesService= new RunInstancesService();
+        $ret=$runInstancesService::getDataDetails($_POST['auth_id']);
+        
+        return $ret;
+        // todo
+    }
+
+    public function getUserData(){
+        $authIds=UserService::getUserData();
+        // return $authIds;
+        $authId = explode(",",$authIds[0]['authIds']);
+        
+        $rett=array();
+        foreach($authId as $value){
+            
+            $condition=array("auth_id"=>$value);
+            // return AuthService::getUserData($condition);
+            array_push($rett,AuthService::getUserData($condition));
+        }
+        // $authIds=array("auth_id"=>1);
+        // $ret = AuthService::getUserData($authIds);
+        // return $rett;
+        $ret=json_encode($rett); // json array to string
+        $ret=str_replace('[','',$ret);
+        $ret=str_replace(']','',$ret);
+
+        // return json_encode($rett);
+        return '['.$ret.']';
+        
+
+        
+        
     }
 }
