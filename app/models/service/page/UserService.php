@@ -4,7 +4,7 @@
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-14 15:50:50
- * @LastEditTime: 2023-04-16 13:08:35
+ * @LastEditTime: 2023-04-17 15:53:30
  */
 
 
@@ -30,9 +30,27 @@ class UserService extends Model{
         return $result;
     }
 
-    public static function getUserData(){
-        $condition=array('user_id'=>Session::get('user_id')); 
+    public static function getUserData($user_id){
+        if($user_id==-1){
+            $condition=array('user_id'=>Session::get('user_id')); 
+        }
+        else{
+            $condition=array('user_id'=>$user_id); 
+        }
+        
         $result = User::where($condition)->field('authIds')->select();
+        return $result;
+    }
+
+    public static function modifyUserData($user_id,$updateInfo){
+        if($user_id==-1){
+            $condition=array('user_id'=>Session::get('user_id')); 
+        }
+        else{
+            $condition=array('user_id'=>$user_id); 
+        }
+        
+        $result = User::where($condition)->update($updateInfo);
         return $result;
     }
 }

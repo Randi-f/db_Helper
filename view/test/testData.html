@@ -1,0 +1,49 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="utf-8"> 
+<title>简单交互</title> //这里就是上网时候的标签页的名字
+<script src="__JS__/bootstrap.js"></script>
+     <script src="__JS__/jquery-3.6.3.min.js"></script>
+<script>
+function showSite(str)
+{
+    if (str=="")
+    {
+        document.getElementById("txtHint").innerHTML="无输入";//这里小改，参数为空显示【无输入】
+        return;
+    } 
+    if (window.XMLHttpRequest)
+    {
+        // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("GET","mysql.php?q="+str,true);
+    xmlhttp.send();
+}
+</script>
+</head>
+<body>
+	<label for="rec"><strong>我要查询</strong></label>//laber其实有没有都不差，听说是方便人点击用的
+	<br>//换行操作，屡试不爽
+    <input id="litter" type="text"  placeholder="报纸"/>
+    //id 这个很关键，后面函数调用的参数要用到， placeholder 就是文本框为空时显示的东西
+	<input type="submit" value="搜索" onclick="showSite(litter.value)"/>
+	//onclick 点击触发函数运行，通过【.litter】指定 id="litter" 的文本框，【.value】指定文本框的输入内容
+    <br>
+    <div id="txtHint"><b>网站信息显示在这里……</b></div> 
+    //这里也很关键，这里是 HTML 显示数据表格的地方，函数里面用到
+</body>
+</html>

@@ -3,7 +3,7 @@
  * @Version: 2.6
  * @Author: fsh
  * @Date: 2023-04-10 17:07:23
- * @LastEditTime: 2023-04-17 11:32:31
+ * @LastEditTime: 2023-04-24 21:52:36
 -->
 <!DOCTYPE html>
 <html>
@@ -161,6 +161,32 @@
       });
     }
 
+    function  doclick(){
+      var  docs1  =  document.getElementById('user1');
+      docs1.readOnly  =  false;
+      docs1.style.background = "lightblue";
+      var  docs2  =  document.getElementById('user2');
+      docs2.readOnly  =  false;
+      docs2.style.background = "lightblue";
+      //alert("asdfasd");
+    }
+    
+    function modifyTrustedUser(){
+      var info = {'user1': user1.value, 'user2':user2.value};
+      $.ajax({
+          type:'post',
+		      url: "{:url('home/modifyTrustedUser')}",
+		      data: info,
+            success: function(d) {
+              alert(d);
+
+			},
+            error: function(data){
+              alert("error");
+            }
+        });
+    }
+
     function openTab(evt, tabName) {
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
@@ -196,6 +222,31 @@
         success: function(d) {
           // alert(d);
           updateTable('myTable1',d);
+			  },
+        error: function(data){
+          alert("error");
+        }
+      });
+
+      $.ajax({
+        type:'post',
+		    url: "{:url('home/getTrustedUser')}",
+		    data: {'none':"none"},
+        success: function(d) {
+          // alert(d);
+          var  docs1  =  document.getElementById('user1');
+          var  docs2  =  document.getElementById('user2');
+          var json = JSON.parse(d);
+          docs1.value=json[0]["user1"];
+          docs2.value=json[0]["user2"];
+          // var text_user1=document.getElementById("user1");
+          // // var text_user1=document.getElementById("user1");
+          
+          // test_user1.innerHTML=json[0]["user1"];
+          // var dt=json[0]["user1"];
+          // test_user1.value="hi";
+          // alert(json[0]["user1"]);
+          // updateTable('myTable2',d);
 			  },
         error: function(data){
           alert("error");
@@ -332,20 +383,28 @@
 
             <div id="Authorize User" class="tabcontent">
               <h3>Authorize User</h3>
-              <p>Authorize User is the capital of Japan.</p>
+              <p>You can choose upto 2 trusted users</p>
+              <p></p>
               <table id = "myTable2" data-pagination="true" data-side-pagination="client" data-page-size="5" >
-                
               </table>
+              user1<input  type="text"  id="user1"  name="user1" value=""  readOnly  />
+              user2<input  type="text"  id="user2"  name="user2" value=""  readOnly  />
+              <input  type="button"  value="edit"  onclick="doclick()">
+              <button onclick="modifyTrustedUser()">save</button>
+             
             </div>
 
             <div id="Upload Data" class="tabcontent">
               <h3>Upload Data</h3>
-              <p>Upload Data is the capital of Japan.</p>
+              <form action="{:url('home/readUploadFile')}" enctype="multipart/form-data" method="post">
+                <input type="file" id="fileName" name="fileName">
+                <button type="submit">submit</button>
+              </form>
             </div>
             
             <div id="Help" class="tabcontent">
               <h3>Help</h3>
-              <p>Help is the capital of Japan.</p>
+              <p>Help </p>
               <table >
                 <tr>
                   <td>Jill</td>

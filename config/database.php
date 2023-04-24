@@ -33,8 +33,8 @@ return [
             'password'        => env('database.password', ''),
             // 端口
             'hostport'        => env('database.hostport', '3306'),
-            // 数据库连接参数
-            'params'          => [],
+            // 数据库连接参数  可能需要这些参数 这里是在 TP 框架中需要设置的参数
+            'params' => [],
             // 数据库编码默认采用utf8
             'charset'         => env('database.charset', 'utf8'),
             // 数据库表前缀
@@ -51,7 +51,10 @@ return [
             // 是否严格检查字段是否存在
             'fields_strict'   => true,
             // 是否需要断线重连
-            'break_reconnect' => false,
+            'break_reconnect' => true,
+
+           
+    
             // 监听SQL
             'trigger_sql'     => env('app_debug', true),
             // 开启字段缓存
@@ -71,8 +74,8 @@ return [
             'password'        => env('database.password', ''),
             // 端口
             'hostport'        => env('database.hostport', '3306'),
-            // 数据库连接参数
-            'params'          => [],
+            // 数据库连接参数  可能需要这些参数 这里是在 TP 框架中需要设置的参数
+            'params' => [PDO::ATTR_CASE => PDO::CASE_LOWER,PDO::ATTR_EMULATE_PREPARES => true,PDO::MYSQL_ATTR_LOCAL_INFILE => true],
             // 数据库编码默认采用utf8
             'charset'         => env('database.charset', 'utf8'),
             // 数据库表前缀
@@ -89,7 +92,7 @@ return [
             // 是否严格检查字段是否存在
             'fields_strict'   => true,
             // 是否需要断线重连
-            'break_reconnect' => false,
+            'break_reconnect' => true,
             // 监听SQL
             'trigger_sql'     => env('app_debug', true),
             // 开启字段缓存

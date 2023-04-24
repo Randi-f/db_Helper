@@ -30,7 +30,7 @@ class User extends Model{
         // $ret = Db::name('user')->insert($data);
         $ret = Db::name('user')->insertGetId($data);
         return $ret;
-        // TODO: insertAll(),save()
+        // insertAll(),save()
         //save()方法是一个通用方法，可以自行判断是新增还是修改(更新)数据；
         //save()方法判断是否为新增或修改的依据为，是否存在主键，不存在即新增；
         Db::name('user')->save($data);

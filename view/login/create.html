@@ -3,7 +3,7 @@
  * @Version: 1.0
  * @Author: fsh
  * @Date: 2023-02-19 14:09:26
- * @LastEditTime: 2023-04-10 16:21:35
+ * @LastEditTime: 2023-04-22 18:50:53
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -129,10 +129,11 @@
 		    url: "{:url('login/createUser')}",
 		    data: info,
             success: function(d) {
-                alert("调用成功")
+                alert("register successfully!");
+                window.location.href = "/login/index";
 			},
             error: function(data){
-                alert("diaoyongshibai");
+                alert("register fail, please try again!");
             }
         });
 
