@@ -4,7 +4,7 @@
  * @Version: 3.0
  * @Author: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-28 20:09:59
+ * @LastEditTime: 2023-04-28 20:51:48
  */
 
 namespace app\controller;
@@ -34,6 +34,21 @@ class HomeController extends BaseController
     {
         return View::fetch("/home/personalpage");
         //return '<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:) </h1><p> ThinkPHP V' . \think\facade\App::version() . '<br/><span style="font-size:30px;">16载初心不改 - 你值得信赖的PHP框架</span></p><span style="font-size:25px;">[ V6.0 版本由 <a href="https://www.yisu.com/" target="yisu">亿速云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="https://e.topthink.com/Public/static/client.js"></script><think id="ee9b1aa918103c4fc"></think>';
+    }
+
+    public function deleteRowByRownum(){
+        $rowNum=str_replace("num=","",Request::query());
+        // return Request::query();
+        // return $_POST["rowNum"];
+        $dbInfo=AuthService::getDataByAuthId(Session::get('auth_id'));
+        $ret=RunInstancesService::deleteByRownum($dbInfo,$rowNum);
+        if($ret==1){
+            return "<script language=javascript>alert('success');history.back();</script>";
+        }
+        else{
+            return "<script language=javascript>alert('fail');history.back();</script>";
+        }
+        
     }
 
      /**
@@ -168,9 +183,17 @@ class HomeController extends BaseController
      * @return {*}
      */    
     public function chooseDataTable(){
-        Session::set('auth_id',$_POST['auth_id']);
-        // todo: check if the user has the authntication of the data
-        return View::fetch("/test/test1");
+        //check if the user has the authntication of the data
+        $check = UserService::checkUserHasAuthToData($_POST['auth_id']);
+        if($check==1){
+            Session::set('auth_id',$_POST['auth_id']);
+            return View::fetch("/test/test1");
+        }
+        else{
+            // return "do not have authentication";
+            return "<script language=javascript>alert('do not have authentication');history.back();</script>";
+        }
+        
         
         //  arrange the html filename and its parent-file
         // return View::fetch("/home/datapage");
@@ -248,19 +271,7 @@ class HomeController extends BaseController
         return AuthService::getAdminData();
     }
 
-    public function deleteRowByRownum(){
-        return Request::query();
-        return $_POST["rowNum"];
-        $dbInfo=AuthService::getDataByAuthId(Session::get('auth_id'));
-        $ret=RunInstancesService::deleteByRownum($dbInfo,$_GET['rowNum']);
-        if($ret==1){
-            return "success";
-        }
-        else{
-            return "fail";
-        }
-        
-    }
+    
 
    
 }
