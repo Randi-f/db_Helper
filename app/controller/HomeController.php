@@ -1,10 +1,10 @@
 <?php
 /*
- * @Description: 
- * @Version: 
+ * @Description: function for personal home page
+ * @Version: 3.0
  * @Author: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-24 23:03:59
+ * @LastEditTime: 2023-04-28 20:09:59
  */
 
 namespace app\controller;
@@ -13,25 +13,43 @@ use app\BaseController;
 use think\facade\Db;
 use think\facade\view;
 use think\facade\Filesystem;
-use app\models\service\data\User;
-use app\service\SendMail;
+use think\facade\Request;
+use think\facade\Session;
+
 use app\models\service\page\UserService;
 use app\models\service\page\AuthService;
 use app\models\service\page\RunInstancesService;
 use app\models\service\page\SecurityListService;
 use app\models\service\page\OperationHistoryService;
-use think\facade\Request;
-use think\facade\Session;
+
 
 
 class HomeController extends BaseController
 {
+    /**
+     * @description: direct to home/personalpage
+     * @return {*}
+     */    
     public function index()
     {
         return View::fetch("/home/personalpage");
         //return '<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:) </h1><p> ThinkPHP V' . \think\facade\App::version() . '<br/><span style="font-size:30px;">16载初心不改 - 你值得信赖的PHP框架</span></p><span style="font-size:25px;">[ V6.0 版本由 <a href="https://www.yisu.com/" target="yisu">亿速云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="https://e.topthink.com/Public/static/client.js"></script><think id="ee9b1aa918103c4fc"></think>';
     }
 
+     /**
+     * @description: reset password
+     * @return {*}
+     */    
+    public function resetPassword(){
+        // return View::fetch("resetpassword");
+        return UserService::resetpassword(md5($_POST["oldpassword"]),md5($_POST["password"]));
+    }
+
+    
+    /**
+     * @description: user uploads file, analyse and restructure and store in db
+     * @return {*}
+     */    
     public function readUploadFile(){
         
         // check file type. only csv is allowed
@@ -78,6 +96,8 @@ class HomeController extends BaseController
         Db::connect('mydb')->execute($cmd_create);
         $filePath = $FILE_PATH.$savename;
         Db::connect('mydb')->execute("LOAD DATA LOCAL INFILE '{$filePath}' INTO TABLE ".$filename. " CHARACTER SET gbk fields terminated by ',' IGNORE 1 LINES");
+        $cmd_createPk="alter table ".$filename." add unique_id int unsigned not Null auto_increment primary key";
+        Db::connect('mydb')->execute($cmd_createPk);
 
         // close the file
         fclose($fp);
@@ -109,18 +129,23 @@ class HomeController extends BaseController
         else{
             return "<script language=javascript>alert('status:fail, please try again!');history.back();</script>";
         }
-        
-        
-
 	
     }
     
+    /**
+     * @description: get the user's profile  (test)
+     * @return {*}
+     */    
     public function getProfile(){
         $userId=1;
         $ret = UserService::getProfile($userId);
         return $ret;
     }
 
+    /**
+     * @description: user modify profile info
+     * @return {*}
+     */    
     public function modifyInfo(){
         $updateInfo=["none" =>"none"];
         if(Request::has('firstName','post')){
@@ -136,63 +161,106 @@ class HomeController extends BaseController
         
         $ret = UserService::modifyProfileInfo($updateInfo);
         return json($ret);
-        // $re=Request::has('firstName','post');
-        // // $ret={'status': $re };
-        // return json($re);
-
-        // return $_POST;
-        // return "传输成功";
-        // return "success";
-
     }
 
+    /**
+     * @description: user view certain data
+     * @return {*}
+     */    
     public function chooseDataTable(){
         Session::set('auth_id',$_POST['auth_id']);
+        // todo: check if the user has the authntication of the data
         return View::fetch("/test/test1");
         
-        // todo arrange the html filename and its parent-file
+        //  arrange the html filename and its parent-file
+        // return View::fetch("/home/datapage");
     }
 
+    /**
+     * @description: user choose certain data to view
+     * @return {*}
+     */    
     public function viewDataTable(){
         // echo Session::get('auth_id');
         $ret=RunInstancesService::getDataDetails(Session::get('auth_id'));      
         return $ret;
     }
+
+    /**
+     * @description: get user's trusted users
+     * @return {*}
+     */    
     public function getTrustedUser(){
         $ret=SecurityListService::getTrustedUser(-1);
         return $ret;
     }
 
+    /**
+     * @description: modify trusted users
+     * @return {*}
+     */    
     public function modifyTrustedUser(){
+        //check whether the new user exists
+        if($_POST['user1']!=""){
+            if(UserService::checkUserExist($_POST['user1'])==0){
+                return "user1 does not exist!";
+            }
+        }
+        if($_POST['user2']!=""){
+            if(UserService::checkUserExist($_POST['user2'])==0){
+                return "user2 does not exist!";
+            }
+        }
         $updateInfo=array("user1"=>$_POST['user1'],"user2"=>$_POST['user2']);
         $ret=SecurityListService::modifyTrustedUser($updateInfo);
-        return $ret;
+        if($ret==1){
+            return "success";
+        }
+        else{
+            return "fail";
+        }
     }
 
+    /**
+     * @description: get user's authorised data
+     * @return {*}
+     */    
     public function getUserData(){
         $authIds=UserService::getUserData(-1);
-        // return $authIds;
         $authId = explode(",",$authIds[0]['authIds']);
         
         $rett=array();
-        foreach($authId as $value){
-            
+        foreach($authId as $value){           
             $condition=array("auth_id"=>$value);
-            // return AuthService::getUserData($condition);
             array_push($rett,AuthService::getUserData($condition));
         }
-        // $authIds=array("auth_id"=>1);
-        // $ret = AuthService::getUserData($authIds);
-        // return $rett;
         $ret=json_encode($rett); // json array to string
         $ret=str_replace('[','',$ret);
         $ret=str_replace(']','',$ret);
+        return '['.$ret.']';              
+    }
 
-        // return json_encode($rett);
-        return '['.$ret.']';
-        
+    /**
+     * @description: admin can get every data from the database
+     * @return {*}
+     */    
+    public function getAdminData(){
+        return AuthService::getAdminData();
+    }
 
-        
+    public function deleteRowByRownum(){
+        return Request::query();
+        return $_POST["rowNum"];
+        $dbInfo=AuthService::getDataByAuthId(Session::get('auth_id'));
+        $ret=RunInstancesService::deleteByRownum($dbInfo,$_GET['rowNum']);
+        if($ret==1){
+            return "success";
+        }
+        else{
+            return "fail";
+        }
         
     }
+
+   
 }
