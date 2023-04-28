@@ -1,19 +1,22 @@
 <?php
 /*
- * @Description: login  http://127.0.0.1:8000/login
+ * @Description: login page
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-19 14:19:52
- * @LastEditTime: 2023-04-15 18:08:06
+ * @LastEditTime: 2023-04-28 16:05:51
  */
 namespace app\controller;
 
 use app\BaseController;
 use think\facade\view;
-use app\models\service\data\User as UserModel;
-use app\service\SendMail;
 use think\facade\Db;
 use think\facade\Session;
+
+use app\models\service\data\User as UserModel;
+
+use app\service\SendMail;
+
 
 class LoginController extends BaseController
 {
@@ -50,7 +53,7 @@ class LoginController extends BaseController
      * @description: register process
      * @return {*}
      */    
-    public function createUser(){ //todo: email send fail, warn user
+    public function createUser(){
         $firstName = $_POST['first_name'];
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
@@ -68,6 +71,9 @@ class LoginController extends BaseController
     public function validateUser(){
         $username = $_POST['username'];
         $password = $_POST['password'];
+        if($username=="" || $password==""){
+            return "<script language=javascript>alert('username or password is empty!');history.back();</script>";
+        }
         $MD5_password = md5($password);
         $condition=array('user_id'=>$username,'user_pwd'=>$MD5_password); 
         $result = UserModel::where($condition)->select();
@@ -79,8 +85,15 @@ class LoginController extends BaseController
     	else               
     	{
             Session::set('user_id',$username);
-            echo Session::get('user_id');
-            return View::fetch("/home/personalpage");
+            // echo Session::get('user_id');
+            if($result[0]['role']=="super"){
+                return View::fetch("/home/superadminpage");
+            }
+            else{
+                return View::fetch("/home/personalpage");
+            }
+            
+            
     	}
 
     }

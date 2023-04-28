@@ -11,7 +11,7 @@
 
  use app\model\Auto_index as DbModel;
  use think\facade\Db;
- // use app\model\User;
+
 
  class DatabaseManagerController{
     public function index()

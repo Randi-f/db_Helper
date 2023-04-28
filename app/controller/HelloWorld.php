@@ -11,6 +11,10 @@ namespace app\controller;
 
 class HelloWorld
 {
+    /**
+     * @description: test json, array, string
+     * @return {*}
+     */    
     public function index()
     {
         // return 'hello world';
