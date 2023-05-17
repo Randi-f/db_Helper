@@ -4,7 +4,7 @@
  * @Version: 3.0
  * @Author: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-28 20:51:48
+ * @LastEditTime: 2023-05-17 21:45:09
  */
 
 namespace app\controller;
@@ -104,7 +104,7 @@ class HomeController extends BaseController
         $i=0;
         foreach ($goods_list[0] as $value){
             $cmd_create=$cmd_create."`".$value."` varchar(45),";
-            echo $value;
+            // echo $value;
         }
         $cmd_create=rtrim($cmd_create,',');
         $cmd_create=$cmd_create."); ";
@@ -134,14 +134,28 @@ class HomeController extends BaseController
 
         // update trusted user's data
         $trustedUser=SecurityListService::getTrustedUser(-1);
-        $updateInfo=array("user1"=>$trustedUser[0]['user1'],"user2"=>$trustedUser[0]['user2']);
-        $ret=SecurityListService::modifyTrustedUser($updateInfo);
+        $updateInfo=array();
+        if($trustedUser[0]['user1']!=""){
+            $updateInfo["user1"]=$trustedUser[0]['user1'];
+        }
+        if($trustedUser[0]['user2']!=""){
+            $updateInfo["user2"]=$trustedUser[0]['user2'];
+        }
+        // return sizeof($updateInfo);
+        if(sizeof($updateInfo)!=0){
+            $ret=SecurityListService::modifyTrustedUser($updateInfo);
+        }
+        else{
+            $ret=2;
+        }
+        // $updateInfo=array("user1"=>$trustedUser[0]['user1'],"user2"=>$trustedUser[0]['user2']);
+        
 
-        if($ret==1){
+        if($ret==1||$ret==2){
             OperationHistoryService::updateOperationHistory(-1, "upload data ".$filename);
             return "<script language=javascript>alert('status:success, data name:".$filename."');history.back();</script>";
         }
-        else{
+        else if ($ret==0){
             return "<script language=javascript>alert('status:fail, please try again!');history.back();</script>";
         }
 	
@@ -157,6 +171,13 @@ class HomeController extends BaseController
         return $ret;
     }
 
+    public function deleteDataTable(){
+        return $_POST['auth_id'];
+    }
+    public function getOperationHistory(){
+        $ret=OperationHistoryService::viewOperationHistory();
+        return $ret;
+    }
     /**
      * @description: user modify profile info
      * @return {*}
@@ -234,13 +255,39 @@ class HomeController extends BaseController
                 return "user2 does not exist!";
             }
         }
-        $updateInfo=array("user1"=>$_POST['user1'],"user2"=>$_POST['user2']);
-        $ret=SecurityListService::modifyTrustedUser($updateInfo);
+
+        $oldInfo=SecurityListService::getTrustedUser(-1);
+        $updateInfo=array();
+        if($_POST['user1']!=$oldInfo[0]['user1']){
+            $updateInfo["user1"]=$_POST['user1'];
+            //删除原来的授权用户的数据权限 // 更改user表中的authIds
+            if($oldInfo[0]['user1']!=""){
+                UserService::deleteAuthorisedUser($oldInfo[0]['user1']);
+            }
+            
+        }
+        if($_POST['user2']!=$oldInfo[0]['user2']){
+            $updateInfo["user2"]=$_POST['user2'];
+            if($oldInfo[0]['user2']!=""){
+                //删除原来的授权用户的数据权限
+                UserService::deleteAuthorisedUser($oldInfo[0]['user2']);
+            }
+            
+        }
+        if(sizeof($updateInfo)>0){
+            // $updateInfo=array("user1"=>$_POST['user1'],"user2"=>$_POST['user2']);
+            // 更改security list
+            $ret=SecurityListService::modifyTrustedUser($updateInfo);
+
+        }
+        
+        
+
         if($ret==1){
             return "success";
         }
         else{
-            return "fail";
+            return "fail! Please contact techinical support: lucifer_1412@bupt.edu.cn";
         }
     }
 

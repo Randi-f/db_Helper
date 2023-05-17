@@ -1,16 +1,24 @@
 <?php
 /*
- * @Description: tool to send email
+ * @Description: tools to send email
  * @Version: 1.0
  * @Author: fsh
  * @Date: 2023-04-09 18:12:59
- * @LastEditTime: 2023-04-10 16:59:14
+ * @LastEditTime: 2023-04-26 20:33:58
  */
+
 namespace app\service;
+
 use PHPMailer\PHPMailer\PHPMailer;
  
 class SendMail
 {
+    /**
+     * @description: send email
+     * @param {*} $email
+     * @param {*} $userId
+     * @return {*}
+     */    
     public static function sendMail($email, $userId)
     {
  
@@ -37,10 +45,10 @@ class SendMail
         $mail->Body = "Your registration has been successful! Your user Id is: ".$userId.". You can use it to login."; // content
  
         if(!$mail->send()){// send email
-            echo "Message could not be sent.";
-            echo "Mailer Error: ".$mail->ErrorInfo;// print error message
+            // echo "Message could not be sent.";
+            return "Mailer Error: ".$mail->ErrorInfo;// print error message
         }else{
-            echo 'send success';
+            return 'send success';
         }
     }
 }

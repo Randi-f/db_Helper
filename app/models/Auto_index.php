@@ -1,13 +1,11 @@
 <?php
 /*
- * @Description: model for database
+ * @Description: model for auto_increment ID (dumped)
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-14 15:50:50
  * @LastEditTime: 2023-02-20 21:17:19
  */
-
-
 
 namespace app\model;
 use think\Model;
@@ -38,7 +36,7 @@ class Auto_index extends Model{
             'email' => 'huiye@163.com',
             ];
         Db::name('user')->insert($data);
-        // TODO: insertAll(),save()
+        
         //save()方法是一个通用方法，可以自行判断是新增还是修改(更新)数据；
         //save()方法判断是否为新增或修改的依据为，是否存在主键，不存在即新增；
         Db::name('user')->save($data);

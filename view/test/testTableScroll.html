@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>表格滚动</title>
+    <style>
+        table,tbody {
+            display: block;
+            height: 195px;
+            border: 0;
+            border-spacing: 0;
+            border-collapse: collapse;
+            cursor: default;
+        }
+
+        tbody {
+            overflow-y: scroll;
+        }
+
+        table thead,
+        tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        table thead {
+            width: calc(100% - 1em)
+        }
+
+        table thead th {
+            background: #84acde;
+            width: 20%;
+        }
+
+        table tbody td {
+            width: 20%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <table  >
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>出生年月</th>
+                <th>手机号码</th>
+                <th>单位</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>张三</td>
+                <td>18</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>李四</td>
+                <td>19</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>王五</td>
+                <td>20</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>腾讯科技</td>
+            </tr>
+            <tr>
+                <td>赵新</td>
+                <td>17</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>腾讯科技</td>
+            </tr>
+            <tr>
+                <td>周明</td>
+                <td>22</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>杨洋</td>
+                <td>19</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>刘艳</td>
+                <td>17</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>王福</td>
+                <td>31</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>张贵</td>
+                <td>32</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+            <tr>
+                <td>吴斌</td>
+                <td>25</td>
+                <td>1990-9-9</td>
+                <td>13682299090</td>
+                <td>阿里巴巴</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

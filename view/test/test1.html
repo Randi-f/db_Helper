@@ -3,7 +3,7 @@
  * @Version: 
  * @Author: fsh
  * @Date: 2023-04-13 18:43:45
- * @LastEditTime: 2023-05-17 11:40:48
+ * @LastEditTime: 2023-05-17 11:59:33
 -->
 <!DOCTYPE HTML>
 <html>
@@ -197,7 +197,7 @@ form.example::after {
   
     function deleteRowByNum(num){
         var infoo = {'rowNum': num};
-        alert(infoo);
+        // alert(infoo);
         $.ajax({
                         type:'post',
                         url: "{:url('home/deleteRowByRownum')}",
@@ -235,9 +235,9 @@ form.example::after {
                         theData=theData+tagInfo;
                         // alert(i);
                     }
-                    alert(theData);
+                    // alert(theData);
                     if(theData!=""){
-                        alert("行号为"+this.parentNode.parentNode.rowIndex);
+                        alert("the column number is: "+this.parentNode.parentNode.rowIndex);
                     var num=this.parentNode.parentNode.rowIndex;
                     // deleteRowByNum(num);
                     // todo 如果是add未确认的时候删除的，不传给后端
@@ -284,7 +284,7 @@ form.example::after {
                     // alert(JSON.stringify(addData));
                     if(mode=='modify'){
                         //修改
-                        alert("修改");
+                        // alert("修改");
                         addData[table.rows[0].cells[columns-2].innerHTML]=this.parentNode.parentNode.getElementsByTagName("td")[columns-2].innerHTML;
                         window.location.href="/test/testModifyInfo?info="+JSON.stringify(addData);
 

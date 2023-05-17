@@ -4,12 +4,11 @@
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-14 15:50:50
- * @LastEditTime: 2023-04-24 22:35:19
+ * @LastEditTime: 2023-05-17 14:59:40
  */
 
-
-
 namespace app\models\service\data;
+
 use think\Model;
 use think\facade\Db;
 use think\facade\Session;
@@ -17,6 +16,12 @@ use think\facade\Session;
 class OperationHistory extends Model{
     protected $connection = 'mysql';
 
+    /**
+     * @description: update user's operation history
+     * @param {*} $userId
+     * @param {*} $operation
+     * @return {*}
+     */    
     public static function updateOperationHistory($userId, $operation){
         if($userId=-1){
             $userId=Session::get('user_id');
@@ -31,16 +36,9 @@ class OperationHistory extends Model{
         return $ret;
     }
 
-    public static function getTrustedUser($condition){
-        $result = Db::name('operation_history')->where($condition)->field('user1,user2')->select();
-        return $result;
-    }
-
-    public static function modifyTrustedUser($updateInfo){
-        $condition=array('admin_id'=>Session::get('user_id')); 
-        $result = Db::name('operation_history')->where($condition)->update($updateInfo);
-        return $result;
-
+    public static function viewOperationHistory(){
+        $ret = Db::name('operation_history')->select();
+        return $ret;
     }
 
     

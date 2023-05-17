@@ -3,8 +3,15 @@
  * @Description: 
  * @Version: 
  * @Author: fsh
+ * @Date: 2023-04-16 22:01:21
+ * @LastEditTime: 2023-05-17 11:57:53
+ */
+/*
+ * @Description: 
+ * @Version: 
+ * @Author: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-28 20:48:11
+ * @LastEditTime: 2023-05-16 19:24:00
  */
 
 namespace app\controller;
@@ -14,6 +21,7 @@ use think\facade\view;
 use think\facade\Session;
 use think\facade\Db;
 use app\models\service\data\User;
+use think\facade\Request;
 use app\service\SendMail;
 use app\models\service\page\FileService;
 use app\models\service\page\UserService;
@@ -21,8 +29,10 @@ use app\models\service\data\OperationHistory;
 use app\models\service\data\Auth;
 use app\models\service\page\SecurityListService;
 use app\service\Result;
+use app\models\service\page\AuthService;
 
 use app\models\service\data\RunInstances;
+use think\facade\App;
 class TestController extends BaseController
 {
     public function index()
@@ -41,6 +51,18 @@ class TestController extends BaseController
         //return '<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:) </h1><p> ThinkPHP V' . \think\facade\App::version() . '<br/><span style="font-size:30px;">16载初心不改 - 你值得信赖的PHP框架</span></p><span style="font-size:25px;">[ V6.0 版本由 <a href="https://www.yisu.com/" target="yisu">亿速云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="https://e.topthink.com/Public/static/client.js"></script><think id="ee9b1aa918103c4fc"></think>';
     }
 
+    public function testErrorPage(){
+        // return "hi:".App::getAppPath();
+        abort(422, 'system error');
+        // abort(401,"unknow error!!");
+        // abort(404,"page error");
+        // return View::fetch("test/401");
+        // throw new \think\exception\HttpException(404, '异常消息');
+        // abort(402, '页面异常2');
+    }
+    public function testDeleteAuthorisedUser(){
+        return UserService::deleteAuthorisedUser(3);
+    }
     public function testDeleteRowByRownum(){
         $dbInfo=Auth::getDataByAuthId(32);
         return RunInstances::deleteByRownum($dbInfo,1);
@@ -120,6 +142,41 @@ class TestController extends BaseController
 	
     }
 
+    public function testModifyInfo(){
+        $info=str_replace("info=","",Request::query());
+        $info=str_replace("%22","\"",$info);
+        $info_json=json_decode($info,true);
+        $condition=array("unique_id"=>$info_json["unique_id"]);
+        unset($info_json["unique_id"]);
+        $dbInfo=AuthService::getDataByAuthId(Session::get('auth_id'));
+        $ret =RunInstances::modifyData($dbInfo,$condition,$info_json);
+        if($ret==1){
+            return "<script language=javascript>alert('modify success');history.back();</script>";
+        }
+        else{
+            return "<script language=javascript>alert('fail! Please contact techinical support: lucifer_1412@bupt.edu.cn');history.back();</script>";
+        }
+        // return $info_json["unique_id"];
+    }
+    public function testAddInfo(){
+        $info=str_replace("info=","",Request::query());
+        $info=str_replace("%22","\"",$info);
+        $insertData=json_decode($info,true);
+
+
+        $dbInfo=AuthService::getDataByAuthId(Session::get('auth_id'));
+        $ret=RunInstances::addData($dbInfo,$insertData);
+        if($ret==1){
+            return "<script language=javascript>alert('add success');history.back();</script>";
+        }
+        else{
+            return "<script language=javascript>alert('fail! Please contact techinical support: lucifer_1412@bupt.edu.cn');history.back();</script>";
+        }
+        // return $strInfo["id"];
+        // return $info;
+        // return Request::query();
+        // return 1;
+    }
     public function testcheckUserHasAuthToData(){
         return UserService::checkUserHasAuthToData(1);
     }

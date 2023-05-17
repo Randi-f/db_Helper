@@ -11,6 +11,10 @@
 
  class MD5
  {
+    /**
+     * @description: test encrypting messages
+     * @return {*}
+     */    
     public function index(){
         $pwd = "12345";
         echo md5($pwd);

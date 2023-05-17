@@ -4,7 +4,7 @@
  * @Version: 1.0
  * @Autor: fsh
  * @Date: 2023-02-19 14:19:52
- * @LastEditTime: 2023-04-28 16:05:51
+ * @LastEditTime: 2023-05-16 13:34:37
  */
 namespace app\controller;
 
@@ -14,7 +14,7 @@ use think\facade\Db;
 use think\facade\Session;
 
 use app\models\service\data\User as UserModel;
-
+use app\models\service\page\SecurityListService;
 use app\service\SendMail;
 
 
@@ -59,7 +59,9 @@ class LoginController extends BaseController
         $email = $_POST['email'];
         $password = $_POST['password'];
         $ret =  UserModel::createUser($firstName,$lastName,$email,md5($password));
+        SecurityListService::createAdmin($ret);
         SendMail::sendMail($email,$ret);
+
         return $ret;
     }
 
@@ -85,7 +87,7 @@ class LoginController extends BaseController
     	else               
     	{
             Session::set('user_id',$username);
-            // echo Session::get('user_id');
+            echo "welcome! USER: ". Session::get('user_id');
             if($result[0]['role']=="super"){
                 return View::fetch("/home/superadminpage");
             }

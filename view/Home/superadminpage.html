@@ -3,7 +3,7 @@
  * @Version: 2.6
  * @Author: fsh
  * @Date: 2023-04-10 17:07:23
- * @LastEditTime: 2023-05-17 21:49:02
+ * @LastEditTime: 2023-05-17 15:15:57
 -->
 <!DOCTYPE html>
 <html>
@@ -11,12 +11,16 @@
 <script src="__JS__/bootstrap.js"></script>
 <script src="__JS__/jquery-3.6.3.min.js"></script>
 <style>
+  .container {
+    height: 100%;
+    background-image: linear-gradient(to left, #fbc2eb, #a6c1ee);
+}
   form.example input[type=text] {
         padding: 10px;
         font-size: 17px;
         border: 1px solid grey;
         float: left;
-        width: 60%;
+        width: 80%;
         background: #f1f1f1;
       }
       
@@ -89,7 +93,7 @@
     }
     /* table,tbody {
             display: block;
-            height: 300px;background
+            height: 300px;
             border: 0;
             border-spacing: 0;
             border-collapse: collapse;
@@ -112,13 +116,13 @@
                 padding: 10px;
                 width: 100%;
                 margin-top: 40px;
-                background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+                background-image: linear-gradient(to right, #fbc2eb,#a6c1ee);
                 color: #fff;
             }
   </style>
 <head>
 	<meta charset="utf-8">
-	<title>Home</title>
+	<title>Super Admin</title>
 </head>
 
 <script>
@@ -146,6 +150,7 @@
         }
     
         }
+
     function modifyInfo(){
       var json_tem = {"operation":"modify profile"};
       if(checkbox_firstName.checked==true){
@@ -210,10 +215,6 @@
     }
     
     function modifyTrustedUser(){
-      if(user1.value!=""&&user1.value==user2.value){
-        alert("cannot authorise the same user multiple times!");
-        return; 
-      }
       var info = {'user1': user1.value, 'user2':user2.value};
       $.ajax({
           type:'post',
@@ -221,17 +222,10 @@
 		      data: info,
             success: function(d) {
               alert(d);
-              var  docs1  =  document.getElementById('user1');
-              docs1.readOnly  =  true;
-              docs1.style.background = "lightgrey";
-              var  docs2  =  document.getElementById('user2');
-              docs2.readOnly  =  true;
-              docs2.style.background = "lightgrey";
 
 			},
             error: function(data){
-              alert("authorising...");
-              // window.location.reload();
+              alert("error");
             }
         });
     }
@@ -266,11 +260,24 @@
 
       $.ajax({
         type:'post',
-		    url: "{:url('home/getUserData')}",
+		    url: "{:url('home/getAdminData')}",
 		    data: {'none':"none"},
         success: function(d) {
           // alert(d);
           updateTable('myTable1',d);
+			  },
+        error: function(data){
+          alert("error");
+        }
+      });
+
+      $.ajax({
+        type:'post',
+		    url: "{:url('home/getOperationHistory')}",
+		    data: {'none':"none"},
+        success: function(d) {
+          // alert(d);
+          updateTable('myTable_op',d);
 			  },
         error: function(data){
           alert("error");
@@ -304,6 +311,33 @@
       
     }
     
+    function searchByKeywords(){
+        
+        // 声明变量
+        var columnName=document.getElementById("columnName").selectedIndex;
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable_op");
+        th=table.getElementsByTagName("th");
+        tr = table.getElementsByTagName("tr");
+     
+    
+        // 循环表格每一行，查找匹配项
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[columnName];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } 
+                else {
+                    tr[i].style.display = "none";
+                }
+            } 
+        }
+    
+    }
+        
     function updateTable(tableId, d){
       var json = JSON.parse(d);
       var table=document.getElementById(tableId);
@@ -323,8 +357,16 @@
       //create tr and append to thead (创建tr,并追加到thead)
       var tr=document.createElement("tr");
       thead.appendChild(tr);
+       //json数组中第1个人的每个属性
+       var selectTab=document.getElementById("columnName");
+                  selectTab.options.length = 0;
+
+                  var count=0;
       //read the attribute of one of json array (json数组中第1个人的每个属性)
       for(var key in json[0]){
+        // add select element
+        selectTab.options.add(new Option(key, count));
+                      count++;
         //create th (创建th)
         var th=document.createElement("th");
         //set the content of th as key (设置th的内容为key)
@@ -370,22 +412,6 @@
           modal.style.display = "none";
         }
       }
-
-      function deleteDataTable(){
-        var input = document.getElementById('auth_id');
-        var info = {'auth_id': input.value};
-        $.ajax({
-        type:'post',
-		    url: "{:url('home/deleteDataTable')}",
-		    data: info,
-        success: function(d) {
-          alert(d);
-			  },
-        error: function(data){
-          alert("error");
-        }
-      });
-      }
       </script>
 <body>
 	<div class="container">
@@ -393,9 +419,8 @@
             <div class="tab">
             <button class="tablinks" onclick="openTab(event, 'Help')" id="defaultOpen">Help</button>
             <button class="tablinks" onclick="openTab(event, 'Profile')">Profile</button>
-            <button class="tablinks" onclick="openTab(event, 'My Data')">My Data</button>
-            <button class="tablinks" onclick="openTab(event, 'Authorize User')">Authorize User</button>
-            <button class="tablinks" onclick="openTab(event, 'Upload Data')">Upload Data</button>
+            <button class="tablinks" onclick="openTab(event, 'User Data')">User Data</button>
+            <button class="tablinks" onclick="openTab(event, 'Manage User')">Manage User</button>
 
             </div>
     
@@ -403,6 +428,14 @@
                 <h3>Help</h3>
                 reset password:
                 <a href="/index/resetPassword">reset password</a>
+                <select id="columnName">
+                </select>
+                <input type="text" id="myInput" onkeyup="searchByKeywords()" placeholder="search info...">
+
+                <div style="height:350px;overflow-x:auto;overflow-y:auto">
+                  <table id = "myTable_op" data-pagination="true" data-side-pagination="client" data-page-size="5" height="300px"  >          
+                  </table>                
+                </div>
             </div>
     
             <div id="Profile" class="tabcontent">
@@ -445,7 +478,7 @@
                 </div>
             </div>
     
-            <div id="My Data" class="tabcontent">
+            <div id="User Data" class="tabcontent">
                 <div style="height:350px;overflow-x:auto;overflow-y:auto">
                   <table id = "myTable1" data-pagination="true" data-side-pagination="client" data-page-size="5" height="300px"  >          
                   </table>
@@ -456,7 +489,6 @@
                 <input type="text" id="myInput1" onkeyup="searchInfo('myInput1',2)" placeholder="search by file name...">
                 <form class="example" action = "{:url('home/chooseDataTable')}" method="post">
                   <input type="text" placeholder="use the data with the id of .." name="auth_id" id="auth_id" required>
-                  <button type="button" onclick="deleteDataTable()">delete</button>
                   <button type="submit" >view data</button>
                 </form>
             </div>
@@ -474,12 +506,13 @@
              
             </div>
 
-            <div id="Upload Data" class="tabcontent">
-              <h3>Upload Data</h3>
-              <form action="{:url('home/readUploadFile')}" enctype="multipart/form-data" method="post">
+            <div id="Manage User" class="tabcontent">
+              <h3>Manage User</h3>
+              <!-- <form action="{:url('home/readUploadFile')}" enctype="multipart/form-data" method="post">
                 <input type="file" id="fileName" name="fileName">
                 <button type="submit">submit</button>
-              </form>
+              </form> -->
+              please use mySQL workbench to operate
             </div>
 
         </div>

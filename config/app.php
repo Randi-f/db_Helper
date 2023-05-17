@@ -4,7 +4,7 @@
  * @Version: 
  * @Autor: fsh
  * @Date: 2023-01-10 11:47:38
- * @LastEditTime: 2023-04-15 17:49:38
+ * @LastEditTime: 2023-05-16 19:24:49
  */
 // +----------------------------------------------------------------------
 // | 应用设置
@@ -35,10 +35,16 @@ return [
     // 异常页面的模板文件
     'exception_tmpl'   => app()->getThinkPath() . 'tpl/think_exception.tpl',
 
+    'http_exception_template'    =>  [
+        // 定义404错误的模板文件地址
+        404 =>  \think\facade\App::getAppPath() . '404.html',
+        // 还可以定义其它的HTTP status
+        401 =>  \think\facade\App::getAppPath() . '401.html',
+    ],
     // 错误显示信息,非调试模式有效
     'error_message'    => '页面错误！请稍后再试～',
     // 显示错误信息
-    'show_error_msg'   => false,
+    'show_error_msg'   => true,
 
     'session'                => [
         'prefix'         => 'think',
